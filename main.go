@@ -88,9 +88,16 @@ func getAttempts(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Configuración del tópico de NTFY
-	ntfyTopic := "mi-topico-ntfy"
-	logFilePath := "/var/log/syslog" // Cambiar si es diferente en tu sistema
+	// Leer las variables de entorno
+	ntfyTopic := os.Getenv("NTFY_TOPIC")
+	if ntfyTopic == "" {
+		ntfyTopic = "mi-topico-ntfy" // Valor predeterminado
+	}
+
+	logFilePath := os.Getenv("LOG_FILE_PATH")
+	if logFilePath == "" {
+		logFilePath = "/var/log/syslog" // Valor predeterminado
+	}
 
 	// Lanzar la captura de logs en una goroutine
 	go followLogs(logFilePath, ntfyTopic)
